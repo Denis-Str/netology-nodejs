@@ -17,8 +17,8 @@ const methods = () => {
 
 const condition = () => ['year', 'y', 'month', 'm', 'date', 'd'].includes(dateType);
 const getDate = () => condition() ?  date[`get${methods()}`]() : date;
-const diff = () => type === 'add' ? getDate() + value : getDate() - value;
-const setDate = () => condition() ?  date[`set${methods()}`](new Date(diff())) : date;
+const diff = () => type === 'add' ? new Date(getDate() + value) : new Date(getDate() - value);
+const setDate = () => condition() ?  date[`set${methods()}`](diff()) : date;
 
 if (type === 'current') console.log(getDate());
 if (type === 'add') console.log(new Date(setDate()).toISOString());
