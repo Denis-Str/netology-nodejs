@@ -7,43 +7,21 @@ const dateType = Object.keys(argv)[1];
 const value = argv[dateType];
 
 const date = new Date();
-
-// console.log(type, dateType, value)
-// console.log(argv)
-// console.log(value)
-const getDate = (dateType) => {
-  switch (dateType) {
-    case ('year' || 'y'):
-      return date.getFullYear();
-    case ('month' || 'm'):
-      return date.getMonth();
-    case ('date' || 'd'):
-      return date.getDate();
-    default:
-      return date;
-  }
-}
-const setDate = (dateType) => {
-  switch (dateType) {
-    case ('year' || 'y'):
-      return 'setFullYear';
-    case ('month' || 'm'):
-      return 'setMonth';
-    case ('date' || 'd'):
-      return 'setDate';
-    default:
-      return 'setDate';
-  }
+const dateAction = (dateType, action = 'get') => {
+  if (dateType === ('year' || 'y')) return `${action}FullYear`;
+  if (dateType === ('month' || 'm')) return `${action}Month`;
+  if (dateType === ('date' || 'd')) return `${action}Date`;
+  return `${action}Date`;
 }
 
-if (type === 'current') console.log(getDate(dateType));
+if (type === 'current') console.log(date[`${dateAction(dateType)}`]());
 
 if (type === 'add') {
-  const newDate = date[`${setDate(dateType)}`](getDate(dateType) + value);
+  const newDate = date[`${dateAction(dateType, 'set')}`](date[`${dateAction(dateType)}`]() + value);
   console.log(new Date(newDate).toISOString());
 }
 
 if (type === 'sub') {
-  const newDate = date[`${setDate(dateType)}`](getDate(dateType) - value);
+  const newDate = date[`${dateAction(dateType, 'set')}`](date[`${dateAction(dateType)}`]() - value);
   console.log(new Date(newDate).toISOString());
 }
