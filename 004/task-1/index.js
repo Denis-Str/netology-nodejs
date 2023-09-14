@@ -1,35 +1,28 @@
 const readline = require('node:readline');
 const { stdin: input, stdout: output } = require('node:process');
 const fs = require('fs');
+const path = require('path');
 
 const fileName = process.argv.slice(2)[0];
 const rl = readline.createInterface({ input, output });
+const file = path.join(__dirname, '', `${fileName}.txt`);
 
 const min = 1;
-const max = 2;
+const max = 3;
 
-fs.readFile(`${fileName}.txt`, 'utf8', (err, data) => {
-  if(err) throw err;
-  console.log(data);
-});
+const writeResult = (content) => {
+  fs.appendFile(file, `${content}, \n`, (err) => {
+    if (err) throw err;
+  })
+}
 
 console.log('Угадайте число от 1 до 2');
 
 rl.on('line', input => {
-  let random = Math.floor(Math.random() * (max - min) + min);
-  console.log(random)
-  if (+input === random) {
-    console.log('Угадали');
-  } else {
-    console.log('Не угадали');
-  }
-  random = Math.floor(Math.random() * (max - min) + min);
-  console.log(random)
+  const random = Math.floor(Math.random() * (max - min) + min);
 
-  fs.appendFile(`${fileName}.txt`, `${+input === random} /n`, (error) =>{
-    if(error) throw error;
+  if (+input === random) console.log('Угадали')
+  else console.log('Не угадали');
 
-    // let data = fs.readFileSync(`${fileName}.txt`, "utf8");
-    // console.log(data);  // выводим считанные данные
-  });
+  writeResult(+input === random);
 });
