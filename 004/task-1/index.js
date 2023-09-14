@@ -11,7 +11,7 @@ const min = 1;
 const max = 3;
 
 const writeResult = (content) => {
-  fs.appendFile(file, `${content}, \n`, (err) => {
+  fs.appendFile(file, `${content}\n`, (err) => {
     if (err) throw err;
   })
 }
