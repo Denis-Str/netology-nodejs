@@ -1,12 +1,12 @@
-
 const express = require('express');
 const app = express();
 const PORT= 3000;
 const HOST= "localhost";
-
-app.use(express.json());
 const routes = require('./routes');
+
 app.use(routes);
+app.use(express.json());
+app.use('/public', express.static(`${__dirname}/public`));
 
 app.listen(PORT, HOST, (error) => {
   if (error) console.log(error);
