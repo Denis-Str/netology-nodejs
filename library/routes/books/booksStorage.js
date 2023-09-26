@@ -8,7 +8,8 @@ module.exports = [
     authors: "string 1",
     favorite: "string 1",
     fileCover: "string 1",
-    fileName: "string 1"
+    fileName: null,
+    fileBook: null
   },
   {
     id: uuid(),
@@ -17,6 +18,7 @@ module.exports = [
     authors: "string 2",
     favorite: "string 2",
     fileCover: "string 2",
-    fileName: "string 2"
+    fileName: null,
+    fileBook: null
   },
 ]

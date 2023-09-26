@@ -6,17 +6,16 @@ const storage = multer.diskStorage({
   },
   filename(req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
-    console.log(file.mimetype)
   }
 });
 
-const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+const allowedTypes = ['text/plain'];
 const fileFilter = (req, file, cb) => {
-  if (true) {
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
     cb(new Error('Invalid file type'));
   }
 };
 
-module.exports = multer({ storage });
+module.exports = multer({ storage, fileFilter });

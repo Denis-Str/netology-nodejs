@@ -62,8 +62,7 @@ router.post('/api/books/:id/upload', fileMulter.single('book'), (req, res) => {
 
   if (req.file && bookIndex !== -1) {
     const { path } = req.file;
-    books[bookIndex] = {...books[bookIndex], fileBook: path, fileName: req.file.originalname};
-    console.log(books)
+    books[bookIndex] = { ...books[bookIndex], fileName: req.file.filename, fileBook: path };
 
     res.json(books[bookIndex]);
   } else {
@@ -76,9 +75,8 @@ router.get('/api/books/:id/download', (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
   if (!book.id) res.status(404).json('404 - книга не найдена');
-  console.log(book)
-  res.download(`/${book.fileBook}`, `${book.fileName}`, err=> {
-    if (err) res.status(503).json('Ошибка сервера');
+  res.download(`${book.fileBook}`, `${book.fileName}`, err=> {
+    if (err) res.status(503).json(`Ошибка сервера - ${err}`);
   });
 });
 
