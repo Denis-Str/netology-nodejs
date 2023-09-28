@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Books | Node JS</title>
+</head>
+<body>
+<%- include("../components/header.ejs") -%>
+<% if (books.length > 0) { %>
+    <h3>Books list</h3>
+    <ul>
+        <% books.forEach(book => { %>
+            <li><%= book.title %></li>
+        <% }); %>
+    </ul>
+<% } %>
+</body>
+</html>

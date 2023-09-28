@@ -11,12 +11,13 @@ router.post('/api/user/login', (req, res) => {
   res.json(data);
 });
 router.post('/api/books', (req, res) => {
-  books.push({id: uuid(), ...req.body})
-  res.json(books)
+  books.push({id: uuid(), ...req.body});
+  res.json(books);
 })
 
 router.get('/api/books', (req, res) => {
-  res.json(books);
+  // res.json(books);
+  res.render('books/index', { title: 'Main', books });
 });
 router.get('/api/books/:id', (req, res) => {
   const {id} = req.params;
