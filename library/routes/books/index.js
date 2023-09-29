@@ -15,9 +15,8 @@ router.post('/api/books', (req, res) => {
   res.json(books);
 })
 
-router.get('/api/books', (req, res) => {
-  // res.json(books);
-  res.render('books/index', { title: 'Main', books });
+router.get('/books', (req, res) => {
+  res.render('books/index', { title: 'Books', books });
 });
 router.get('/api/books/:id', (req, res) => {
   const {id} = req.params;
