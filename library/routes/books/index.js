@@ -1,23 +1,26 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const { v4: uuid } = require("uuid");
 const router = express.Router();
 const fileMulter = require('../../middleware/books/upload');
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let books = require("./booksStorage");
 
-router.post('/api/user/login', (req, res) => {
-  const data = {id: 1, mail: "test@mail.ru"};
-  res.status(201);
-  res.json(data);
-});
-router.post('/api/books', (req, res) => {
-  books.push({id: uuid(), ...req.body});
-  res.json(books);
-})
-
-router.get('/books', (req, res) => {
+router.get('/api/books', (req, res) => {
   res.render('books/index', { title: 'Books', books });
 });
+
+router.post('/api/books/create', urlencodedParser,(req, res) => {
+  books.push({id: uuid(), ...req.body });
+  res.status(201);
+  res.redirect('/api/books');
+})
+
+router.get('/api/books/create', (req, res) => {
+  res.render('books/create', { title: 'Create', book: {} });
+})
+
 router.get('/api/books/:id', (req, res) => {
   const {id} = req.params;
   const book = books.find(({id: bookID}) => bookID === id);

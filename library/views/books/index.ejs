@@ -1,5 +1,5 @@
 <%- include('../port/layout-start', {title: title}) %>
-<%- include('../components/menu') %>
+<%- include('../_components/menu') %>
 <% if (books.length > 0) { %>
     <h4>Books list</h4>
     <ul class="list-group">
@@ -7,5 +7,7 @@
             <li class="list-group-item"><%= book.title %></li>
         <% }); %>
     </ul>
+<% } else { %>
+    <h5>The list of books is empty</h5>
 <% } %>
 <%- include('../port/layout-end') %>

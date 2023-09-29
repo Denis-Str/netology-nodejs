@@ -5,7 +5,7 @@ const HOST= "localhost";
 const routes = require('./routes');
 
 app.use(routes);
-app.use(express.json());
+
 app.use('/public', express.static(`${__dirname}/public`));
 app.set("view engine", "ejs");
 

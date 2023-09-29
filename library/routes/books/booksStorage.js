@@ -7,7 +7,7 @@ module.exports = [
     description: "string 1",
     authors: "string 1",
     favorite: "string 1",
-    fileCover: "string 1",
+    fileCover: null,
     fileName: null,
     fileBook: null
   },
@@ -17,7 +17,7 @@ module.exports = [
     description: "string 2",
     authors: "string 2",
     favorite: "string 2",
-    fileCover: "string 2",
+    fileCover: null,
     fileName: null,
     fileBook: null
   },
