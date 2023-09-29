@@ -7,58 +7,79 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let books = require("./booksStorage");
 
+// список всех книг
 router.get('/api/books', (req, res) => {
   res.render('books/index', { title: 'Books', books });
 });
 
+// создание книги
 router.post('/api/books/create', urlencodedParser,(req, res) => {
   books.push({id: uuid(), ...req.body });
   res.status(201);
   res.redirect('/api/books');
 })
 
+// форма создания книги
 router.get('/api/books/create', (req, res) => {
   res.render('books/create', { title: 'Create', book: {} });
 })
 
-router.get('/api/books/:id', (req, res) => {
-  const {id} = req.params;
+// получение книги
+router.get('/api/books/detailed/:id', urlencodedParser, (req, res) => {
+  const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book?.id) res.json(book);
+  if (book?.id) res.render('books/detailed', { title: 'Detailed', book });
   else {
     res.status(404)
     res.json('404 - книга не найдена')
   }
 });
 
-router.put('/api/books/:id', (req, res) => {
+router.get('/api/books/update/:id', (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
-  const editBook = {id, ...req.body};
 
   if (book.id) {
-    books = [...books, editBook];
-    res.json(editBook);
+    res.status(201);
+    res.render('books/update', { title: 'Update', book });
+  } else {
+    res.status(404)
+    res.json('404 - книга не найдена')
+  }
+})
+// редактирование книги
+router.post('/api/books/update/:id', urlencodedParser, (req, res) => {
+  const { id } = req.params;
+  const bookIndex = books.findIndex(({id: bookID}) => bookID === id);
+  console.log(req.body)
+  if (bookIndex !== -1) {
+    books[bookIndex] = { ...books[bookIndex], ...req.body };
+    res.status(201);
+    res.redirect('/api/books');
   } else {
     res.status(404)
     res.json('404 - книга не найдена')
   }
 });
 
-router.delete('/api/books/:id', (req, res) => {
+// удаление книги
+router.post('/api/books/delete/:id', (req, res) => {
   const { id } = req.params;
+  console.log(req.params)
   const book = books.find(({id: bookID}) => bookID === id);
 
   if (book.id) {
     books = books.filter(({id: bookID}) => bookID !== id);
-    res.json('ok');
+    res.status(201);
+    res.redirect('/api/books');
   } else {
     res.status(503);
     res.json('503 | книга не удалена');
   }
 });
 
+// загрузка файла
 router.post('/api/books/:id/upload', fileMulter.single('book'), (req, res) => {
   const { id } = req.params;
   const bookIndex = books.findIndex(({id: bookID}) => bookID === id);
@@ -74,6 +95,7 @@ router.post('/api/books/:id/upload', fileMulter.single('book'), (req, res) => {
   }
 });
 
+// скачивание файла
 router.get('/api/books/:id/download', (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);

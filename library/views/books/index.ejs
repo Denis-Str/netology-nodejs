@@ -4,7 +4,20 @@
     <h4>Books list</h4>
     <ul class="list-group">
         <% books.forEach(book => { %>
-            <li class="list-group-item"><%= book.title %></li>
+            <li class="list-group-item">
+                <%= book.title %>
+                <a class="btn btn-sm btn-success" href="/api/books/detailed/<%= book.id %>">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-sm btn-primary" href="/api/books/update/<%= book.id %>">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </a>
+                <form action="/api/books/delete/<%= book.id %>" method="post" class="d-inline">
+                    <button class="btn btn-sm btn-danger">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </li>
         <% }); %>
     </ul>
 <% } else { %>
