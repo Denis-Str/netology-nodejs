@@ -29,7 +29,13 @@ router.get('/api/books/detailed/:id', urlencodedParser, (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book?.id) res.render('books/detailed', { title: 'Detailed', book });
+  if (book?.id) {
+    //тут передать в запрос id книги
+    router.post(`/counter/${id}/incr`, (req, res) => {
+      res.json({bookID: id});
+    });
+    res.render('books/detailed', {title: 'Detailed', book});
+  }
   else {
     res.status(404)
     res.json('404 - книга не найдена')
