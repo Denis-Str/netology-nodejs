@@ -16,7 +16,7 @@ services:
     command:
       - npm
       - run
-      - server
+      - dev
     depends_on:
       - storage
   library:
@@ -31,4 +31,4 @@ services:
     command:
       - npm
       - run
-      - server
+      - dev

@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require("node:http");
 const bodyParser = require('body-parser');
 const { v4: uuid } = require("uuid");
 const router = express.Router();
@@ -6,6 +7,25 @@ const fileMulter = require('../../middleware/books/upload');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let books = require("./booksStorage");
+
+async function fetchCounter(id) {
+  http.get(`http://localhost:3001/counter/${id}/incr`, async res => {
+    const { statusCode } = res;
+    if (statusCode !== 200) {
+      console.log(`statusCode: ${statusCode}`)
+      return;
+    }
+
+    let resData = '';
+    let answer = '';
+    res.on('data', chunk => resData += chunk);
+    res.on('end', () => answer = JSON.parse(resData));
+    return answer;
+  }).on('error', (err) => {
+    console.error(err)
+  })
+}
+
 
 // список всех книг
 router.get('/api/books', (req, res) => {
@@ -32,6 +52,7 @@ router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
 
   if (book?.id) {
     // console.log(`http://localhost:3001/counter/${id}/incr`)
+    await fetchCounter(id);
     res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
   }
   else {
