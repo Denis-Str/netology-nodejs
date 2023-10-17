@@ -9,7 +9,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 let books = require("./booksStorage");
 
 async function fetchCounter(id) {
-  http.get(`http://localhost:3001/counter/${id}/incr`, async res => {
+  return http.get(`http://localhost:3001/counter/${id}/incr`, async res => {
     const { statusCode } = res;
     if (statusCode !== 200) {
       console.log(`statusCode: ${statusCode}`)
@@ -23,6 +23,7 @@ async function fetchCounter(id) {
     return answer;
   }).on('error', (err) => {
     console.error(err)
+    return null;
   })
 }
 
