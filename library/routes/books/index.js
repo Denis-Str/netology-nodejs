@@ -25,16 +25,16 @@ router.get('/api/books/create', (req, res) => {
 })
 
 // получение книги
-router.get('/api/books/detailed/:id', urlencodedParser, (req, res) => {
+router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
+  let counter = 0;
 
   if (book?.id) {
-    //тут передать в запрос id книги
-    router.post(`/counter/${id}/incr`, (req, res) => {
-      res.json({bookID: id});
+    router.post(`http://localhost:3001/counter/${id}/incr`, (req, res) => {
+      res.json({ bookID: id });
     });
-    res.render('books/detailed', {title: 'Detailed', book});
+    res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
   }
   else {
     res.status(404)

@@ -2,7 +2,7 @@ services:
   storage:
     image: redis
     volumes:
-      - ./container/data:/data
+      - ./counter/data:/data
   counter:
     image: node:18.18-alpine
     working_dir: /app
@@ -12,7 +12,7 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
-      - REDIS_URI=redis://storage
+      - REDIS_URL=redis://storage
     command:
       - npm
       - run
@@ -28,7 +28,6 @@ services:
       - "3002:3002"
     environment:
       - PORT=3002
-      - REDIS_URI=redis://storage
     command:
       - npm
       - run
