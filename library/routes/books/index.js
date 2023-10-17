@@ -31,9 +31,7 @@ router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   let counter = 0;
 
   if (book?.id) {
-    router.post(`http://localhost:3001/counter/${id}/incr`, (req, res) => {
-      res.json({ bookID: id });
-    });
+    // console.log(`http://localhost:3001/counter/${id}/incr`)
     res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
   }
   else {
@@ -72,7 +70,6 @@ router.post('/api/books/update/:id', urlencodedParser, (req, res) => {
 // удаление книги
 router.post('/api/books/delete/:id', (req, res) => {
   const { id } = req.params;
-  console.log(req.params)
   const book = books.find(({id: bookID}) => bookID === id);
 
   if (book.id) {
