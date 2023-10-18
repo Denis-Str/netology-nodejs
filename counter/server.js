@@ -26,6 +26,7 @@ const client = redis.createClient({
 route.post('/counter/:bookId/incr', async (req, res) => {
   const { bookId } = req.params;
   const count = await client.incr(bookId);
+  console.log(`/counter/${bookId}/incr`, count)
   res.json({ count });
 });
 route.get('/counter/:bookId', async (req, res) => {

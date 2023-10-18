@@ -8,29 +8,48 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let books = require("./booksStorage");
 
-async function fetchCounter(id) {
-  return http.get(`http://localhost:3001/counter/${id}/incr`, async res => {
+const fetchCounter = id => {
+  return http.request({
+    host: 'counter',
+    port: 3001,
+    path: `/counter/${id}/incr`,
+    method: 'POST',
+  }, (res) => {
+    res.resume();
+    res.on('end', () => {
+      if (!res.complete) console.error('server error 500');
+    });
+  });
+}
+
+const getCounter = id => {
+  http.get(`http://counter:3001/counter/${id}`, async res => {
     const { statusCode } = res;
     if (statusCode !== 200) {
       console.log(`statusCode: ${statusCode}`)
       return;
     }
 
-    let resData = '';
-    let answer = '';
-    res.on('data', chunk => resData += chunk);
-    res.on('end', () => answer = JSON.parse(resData));
-    return answer;
-  }).on('error', (err) => {
-    console.error(err)
-    return null;
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      try {
+        const { counter } = JSON.parse(rawData);
+        console.log('getCounter', counter);
+      } catch (e) {
+        console.error(e.message);
+      }
+    });
   })
+    .on('error', (err) => {
+      console.error(err)
+    })
 }
-
 
 // список всех книг
 router.get('/api/books', (req, res) => {
   res.render('books/index', { title: 'Books', books });
+  // getCounter(1);
 });
 
 // создание книги
@@ -52,8 +71,9 @@ router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   let counter = 0;
 
   if (book?.id) {
-    // console.log(`http://localhost:3001/counter/${id}/incr`)
-    await fetchCounter(id);
+    fetchCounter(id)
+      .end();
+
     res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
   }
   else {
