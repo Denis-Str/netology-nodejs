@@ -32,8 +32,8 @@ route.post('/counter/:bookId/incr', async (req, res) => {
 route.get('/counter/:bookId', async (req, res) => {
   try {
     const { bookId } = req.params;
-    const counter = await client.get(bookId);
-    res.json({ counter });
+    const count = await client.get(bookId);
+    res.json({ count });
   } catch (error) {
     res.json(error);
   }
