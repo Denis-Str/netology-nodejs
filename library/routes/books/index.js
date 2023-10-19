@@ -1,5 +1,5 @@
 const express = require('express');
-const http = require("node:http");
+const axios = require('axios').default;
 const bodyParser = require('body-parser');
 const { v4: uuid } = require("uuid");
 const router = express.Router();
@@ -7,12 +7,10 @@ const fileMulter = require('../../middleware/books/upload');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let books = require("./booksStorage");
-const { fetchCounter, getCounter } = require('../counter/index');
 
 // список всех книг
 router.get('/api/books', (req, res) => {
   res.render('books/index', { title: 'Books', books });
-  getCounter(1);
 });
 
 // создание книги
@@ -31,10 +29,9 @@ router.get('/api/books/create', (req, res) => {
 router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
-  let counter = 0;
 
   if (book?.id) {
-    fetchCounter(id)
+    const { data: { count: counter } } = await axios.post(`http://counter:3001/counter/${id}/incr`);
     res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
   }
   else {
