@@ -1,0 +1,34 @@
+services:
+  storage:
+    image: redis
+    volumes:
+      - ./counter/data:/data
+  counter:
+    image: node:18.18-alpine
+    working_dir: /app
+    volumes:
+      - ./counter:/app
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - REDIS_URL=redis://storage
+    command:
+      - npm
+      - run
+      - dev
+    depends_on:
+      - storage
+  library:
+    image: node:18.18-alpine
+    working_dir: /app
+    volumes:
+      - ./library:/app
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+    command:
+      - npm
+      - run
+      - dev

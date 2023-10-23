@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios').default;
 const bodyParser = require('body-parser');
 const { v4: uuid } = require("uuid");
 const router = express.Router();
@@ -25,11 +26,14 @@ router.get('/api/books/create', (req, res) => {
 })
 
 // получение книги
-router.get('/api/books/detailed/:id', urlencodedParser, (req, res) => {
+router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   const { id } = req.params;
   const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book?.id) res.render('books/detailed', { title: 'Detailed', book });
+  if (book?.id) {
+    const { data: { count: counter } } = await axios.post(`http://counter:3001/counter/${id}/incr`);
+    res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
+  }
   else {
     res.status(404)
     res.json('404 - книга не найдена')
@@ -66,7 +70,6 @@ router.post('/api/books/update/:id', urlencodedParser, (req, res) => {
 // удаление книги
 router.post('/api/books/delete/:id', (req, res) => {
   const { id } = req.params;
-  console.log(req.params)
   const book = books.find(({id: bookID}) => bookID === id);
 
   if (book.id) {

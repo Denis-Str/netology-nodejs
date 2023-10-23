@@ -1,13 +1,13 @@
 const express = require('express');
-const routes = express.Router();
+const route = express.Router();
 const booksRoutes = require('./books');
 const userRoutes = require('./user');
 
-routes.use(booksRoutes);
-routes.use(userRoutes);
-routes.get('/', (req, res) => {
+route.use(booksRoutes);
+route.use(userRoutes);
+route.get('/', (req, res) => {
   res.render('index', { title: 'Main' });
 });
 
 
-module.exports = routes;
+module.exports = route;
