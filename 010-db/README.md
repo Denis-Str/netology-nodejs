@@ -14,7 +14,7 @@ const bookSchema = new Schema({
   description: String
 }, { timestamps: true });
 
-const Book = mongoose.model('Post', bookSchema);
+const Book = mongoose.model('Book', bookSchema);
 module.exports = Book;
 
 ```
@@ -49,7 +49,7 @@ import { BookModel } from '@/models/bookModel';
   // обновление книги
   const updateBook = async (id, book) => {
     try {
-      const book = await Post.findByIdAndUpdate(id, { ...book });
+      const book = await Book.findByIdAndUpdate(id, { ...book });
       await book.save();
     } catch (e) {
       console.log(e);

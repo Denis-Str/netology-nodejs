@@ -1,21 +1,27 @@
 const express = require('express');
 const axios = require('axios').default;
 const bodyParser = require('body-parser');
-const { v4: uuid } = require("uuid");
 const router = express.Router();
 const fileMulter = require('../../middleware/books/upload');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-let books = require("./booksStorage");
+const BookModel = require('../../models/book');
 
 // список всех книг
-router.get('/api/books', (req, res) => {
-  res.render('books/index', { title: 'Books', books });
+router.get('/api/books', async (req, res) => {
+  try {
+    const books = await BookModel.find().sort({ createdAt: -1 });
+    res.render('books/index', { title: 'Books', books });
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 // создание книги
-router.post('/api/books/create', urlencodedParser,(req, res) => {
-  books.push({id: uuid(), ...req.body });
+router.post('/api/books/create', urlencodedParser, async (req, res) => {
+  const book = req.body
+  const newBook = new BookModel(book);
+  await newBook.save();
   res.status(201);
   res.redirect('/api/books');
 })
@@ -28,11 +34,11 @@ router.get('/api/books/create', (req, res) => {
 // получение книги
 router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   const { id } = req.params;
-  const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book?.id) {
+  if (id) {
+    const { title, author, description } = await BookModel.findById(id);
     const { data: { count: counter } } = await axios.post(`http://counter:3001/counter/${id}/incr`);
-    res.render('books/detailed', {title: 'Detailed', book: { ...book, counter } });
+    res.render('books/detailed', { title: 'Detailed', book: { title, author, description, counter, id } });
   }
   else {
     res.status(404)
@@ -40,25 +46,26 @@ router.get('/api/books/detailed/:id', urlencodedParser, async (req, res) => {
   }
 });
 
-router.get('/api/books/update/:id', (req, res) => {
+router.get('/api/books/update/:id', async (req, res) => {
   const { id } = req.params;
-  const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book.id) {
+  if (id) {
+    const { title, author, description } = await BookModel.findById(id);
     res.status(201);
-    res.render('books/update', { title: 'Update', book });
+    res.render('books/update', { title: 'Update', book: { title, author, description } });
   } else {
     res.status(404)
     res.json('404 - книга не найдена')
   }
 })
 // редактирование книги
-router.post('/api/books/update/:id', urlencodedParser, (req, res) => {
+router.post('/api/books/update/:id', urlencodedParser, async (req, res) => {
   const { id } = req.params;
-  const bookIndex = books.findIndex(({id: bookID}) => bookID === id);
-  console.log(req.body)
-  if (bookIndex !== -1) {
-    books[bookIndex] = { ...books[bookIndex], ...req.body };
+
+  if (id) {
+    const { title, author, description } = req.body;
+    const book = await BookModel.findByIdAndUpdate(id, { title, author, description });
+    await book.save();
     res.status(201);
     res.redirect('/api/books');
   } else {
@@ -68,12 +75,11 @@ router.post('/api/books/update/:id', urlencodedParser, (req, res) => {
 });
 
 // удаление книги
-router.post('/api/books/delete/:id', (req, res) => {
+router.post('/api/books/delete/:id', async (req, res) => {
   const { id } = req.params;
-  const book = books.find(({id: bookID}) => bookID === id);
 
-  if (book.id) {
-    books = books.filter(({id: bookID}) => bookID !== id);
+  if (id) {
+    await BookModel.findByIdAndDelete(id);
     res.status(201);
     res.redirect('/api/books');
   } else {
