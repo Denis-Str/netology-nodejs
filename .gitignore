@@ -49,3 +49,4 @@ sw.*
 
 # Vim swap files
 *.swp
+/counter/data/dump.rdb
